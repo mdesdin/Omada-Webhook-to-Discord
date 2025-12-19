@@ -66,6 +66,10 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+    # Override the built-in .env (Optional)
+    #volumes:
+    #  - ./env/.env:/app/.env:ro
 ````
 
 ## MIT License
