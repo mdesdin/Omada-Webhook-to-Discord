@@ -1,4 +1,3 @@
-import process from 'node:process';
 process.loadEnvFile('.env', { override: false });
 
 const express = require('express');

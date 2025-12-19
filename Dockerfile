@@ -22,8 +22,9 @@ RUN npm ci --omit=dev
 # Copy application source
 COPY . .
 
-# Ensure .env exists (copy defaults if missing)
-RUN if [ ! -f .env ]; then cp .env.default .env; fi
+# Ensure .env exists but does not override runtime env vars
+# Create empty .env to satisfy process.loadEnvFile()
+RUN if [ ! -f .env ]; then touch .env; fi
 
 # Change ownership of app files to node user
 RUN chown -R node:node /app
