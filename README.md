@@ -27,5 +27,46 @@ POST /discord/webhook
 http://192.168.0.145:8080/discord/webhook
 ```
 
+### Docker Compose
+Run this container alongside your Omada Controller and reference it by container name in the Controller settings (```http://omada-webhook-to-discord:8080/discord/webhook```).
+````
+services:
+  omada-webhook-to-discord:
+    container_name: omada-webhook-to-discord
+    image: ghcr.io/mdesdin/omada-webhook-to-discord:1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+
+    # Environment variables
+    env_file:
+      - .env
+
+    # Omada needs to reach this port
+    # Only need to expose it if this container is not
+    # on the same docker network as your omada controller
+    #ports:
+    #  - "8080:8080"
+
+    # Security hardening (safe for this app)
+    user: "1000:1000"   # node user inside node:20-alpine
+    read_only: true
+    cap_drop:
+      - ALL
+
+    # Writable tmpfs for Node.js
+    tmpfs:
+      - /tmp
+
+    # Healthcheck mirrors Dockerfile (Compose overrides allowed)
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+````
+
 ## MIT License
 Copyright 2024-2025 © by [Sefinek](https://sefinek.net). All Rights Reserved.
