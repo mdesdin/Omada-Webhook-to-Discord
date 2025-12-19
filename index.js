@@ -1,4 +1,5 @@
-process.loadEnvFile();
+import process from 'node:process';
+process.loadEnvFile('.env', { override: false });
 
 const express = require('express');
 const { networkInterfaces } = require('node:os');
